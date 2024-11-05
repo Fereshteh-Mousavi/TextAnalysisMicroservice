@@ -1,0 +1,6 @@
+@TextAnalysisMicroservice_HostAddress = http://localhost:5058
+
+GET {{TextAnalysisMicroservice_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
