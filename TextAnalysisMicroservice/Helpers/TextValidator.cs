@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace TextAnalysisMicroservice.Helpers
@@ -10,9 +11,12 @@ namespace TextAnalysisMicroservice.Helpers
             if (string.IsNullOrEmpty(input))
                 return false;
 
-            input = input.Trim();
-            return (input.Length % 4 == 0) &&
-                   Regex.IsMatch(input, @"^(?:[A-Za-z0-9+/=]*|\s*)$", RegexOptions.None);
+            input = input.Trim().Replace("\n", "").Replace("\r", "");
+
+            if (input.Length % 4 != 0)
+                return false;
+
+            return Regex.IsMatch(input, @"^[A-Za-z0-9+/]*={0,2}$");
         }
 
         public static bool IsValidEmail(string input)
@@ -36,54 +40,52 @@ namespace TextAnalysisMicroservice.Helpers
             if (string.IsNullOrWhiteSpace(input))
                 return null;
 
-            
-            string sanitizedInput = input.Replace(" ", "")
-                                         .Replace("_", "")
-                                         .Replace("m", "")
-                                         .Replace("'", "");
+            string sanitizedInput = input.Trim();
 
-            
-            int lastCommaIndex = sanitizedInput.LastIndexOf(',');
-            int lastDotIndex = sanitizedInput.LastIndexOf('.');
+            int commaCount = sanitizedInput.Count(c => c == ',');
+            int periodCount = sanitizedInput.Count(c => c == '.');
 
-            if (lastCommaIndex > lastDotIndex && lastCommaIndex != -1)
+            if (commaCount > 1 && periodCount > 1)
             {
-                sanitizedInput = sanitizedInput.Replace(".", ""); 
-                sanitizedInput = ReplaceLastOccurrence(sanitizedInput, ",", "."); 
+                return null;
             }
-            else if (lastDotIndex > lastCommaIndex && lastDotIndex != -1)
+            if (commaCount == 1 && periodCount == 1 && sanitizedInput.IndexOf(',') > sanitizedInput.IndexOf('.'))
             {
-                
-                sanitizedInput = sanitizedInput.Replace(",", "");  
+                return null;
             }
-            else
+            if (commaCount > 0 && periodCount > 0 && Math.Abs(sanitizedInput.IndexOf(',') - sanitizedInput.IndexOf('.')) == 1)
             {
-               
-                sanitizedInput = sanitizedInput.Replace(",", "").Replace(".", "");
+                return null;
             }
 
-            
-            if (decimal.TryParse(sanitizedInput, out decimal result))
+            if (commaCount == 1 && periodCount > 1)
+            {
+                sanitizedInput = sanitizedInput.Replace(".", "").Replace(",", ".");
+            }
+            else if (periodCount == 1 && commaCount > 1)
+            {
+                sanitizedInput = sanitizedInput.Replace(",", "");
+            }
+            else if (commaCount == 1 && periodCount == 0)
+            {
+                sanitizedInput = sanitizedInput.Replace(",", ".");
+            }
+            else if (periodCount == 1 && commaCount == 0)
+            {
+            }
+            else if (commaCount > 1 || periodCount > 1)
+            {
+                return null;
+            }
+
+            if (decimal.TryParse(sanitizedInput, System.Globalization.NumberStyles.AllowDecimalPoint,
+                                 System.Globalization.CultureInfo.InvariantCulture, out decimal result))
             {
                 return result;
             }
 
-            return 0;
+            return null;
         }
-
-        
-        private static string ReplaceLastOccurrence(string source, string find, string replace)
-        {
-            int place = source.LastIndexOf(find);
-            if (place == -1)
-                return source;
-
-            return source.Remove(place, find.Length).Insert(place, replace);
-        }
-
-
-
-
 
     }
 }

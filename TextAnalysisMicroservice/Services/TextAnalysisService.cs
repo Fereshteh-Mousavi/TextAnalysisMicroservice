@@ -9,20 +9,23 @@ public class TextAnalysisService : ITextAnalysisService
         var result = new Dictionary<string, int>();
         foreach (var word in words)
         {
-            result[word] = Regex.Matches(input, $@"\b{Regex.Escape(word)}\b").Count;
+            result[word] = Regex.Matches(input, $@"\b{Regex.Escape(word)}\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).Count;
         }
         return result;
     }
+
 
     public Dictionary<string, bool> ContainsWords(string input, List<string> words)
     {
         var result = new Dictionary<string, bool>();
         foreach (var word in words)
         {
-            result[word] = input.Contains(word, StringComparison.OrdinalIgnoreCase);
+            string pattern = $@"\b{Regex.Escape(word)}\b";
+            result[word] = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
         }
         return result;
     }
+
     public bool IsBase64(string input)
     {
         return TextValidator.IsBase64(input);

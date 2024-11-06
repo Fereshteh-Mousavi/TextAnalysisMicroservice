@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextAnalysisMicroservice", "TextAnalysisMicroservice\TextAnalysisMicroservice.csproj", "{3FF1E34C-E62A-4DA2-875D-AE264C1D186B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextAnalysisMicroservice", "TextAnalysisMicroservice\TextAnalysisMicroservice.csproj", "{3FF1E34C-E62A-4DA2-875D-AE264C1D186B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextAnalysisMicroserviceTests1", "TextAnalysisMicroserviceTests1\TextAnalysisMicroserviceTests1.csproj", "{4862332A-2F7C-478F-9D9D-8F6436289339}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{3FF1E34C-E62A-4DA2-875D-AE264C1D186B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FF1E34C-E62A-4DA2-875D-AE264C1D186B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FF1E34C-E62A-4DA2-875D-AE264C1D186B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4862332A-2F7C-478F-9D9D-8F6436289339}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4862332A-2F7C-478F-9D9D-8F6436289339}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4862332A-2F7C-478F-9D9D-8F6436289339}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4862332A-2F7C-478F-9D9D-8F6436289339}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

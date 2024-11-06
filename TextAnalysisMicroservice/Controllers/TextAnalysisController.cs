@@ -115,41 +115,57 @@ namespace TextAnalysisMicroservice.Controllers
                     Data = null,
                     Message = "Input cannot be null or empty.",
                     Success = false,
-                    ErrorDetails = "Invalid input provided."
+                    ErrorDetails = "The input string is invalid."
                 });
             }
 
-            decimal? result = _textAnalysisService.ConvertToDecimal(request.Input);
+            _logger.LogInformation($"Received input for conversion: {request.Input}");
 
-            if (result.HasValue)
+            try
             {
-                return Ok(new ApiResponse<object>
+                decimal? result = _textAnalysisService.ConvertToDecimal(request.Input);
+
+                if (result.HasValue)
                 {
-                    Data = new
+                    _logger.LogInformation($"Conversion successful. Result: {result.Value}");
+                    return Ok(new ApiResponse<object>
                     {
-                        Input = request.Input,
-                        Result = result.Value
-                    },
-                    Message = "Conversion successful.",
-                    Success = true,
-                    ErrorDetails = null
-                });
+                        Data = new
+                        {
+                            Input = request.Input,
+                            Result = result.Value
+                        },
+                        Message = "Conversion successful.",
+                        Success = true,
+                        ErrorDetails = null
+                    });
+                }
+                else
+                {
+                    _logger.LogWarning($"Failed to convert input: {request.Input}");
+                    return BadRequest(new ApiResponse<string>
+                    {
+                        Data = null,
+                        Message = "The input string is not a valid decimal format.",
+                        Success = false,
+                        ErrorDetails = "Invalid decimal format provided."
+                    });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Ok(new ApiResponse<object>
+                _logger.LogError(ex, "An error occurred while processing ConvertToDecimal request.");
+                return StatusCode(500, new ApiResponse<string>
                 {
-                    Data = new
-                    {
-                        Input = request.Input,
-                        Result = 0
-                    },
-                    Message = "The input string is not a valid decimal format.",
-                    Success = true,
-                    ErrorDetails = null
+                    Success = false,
+                    Message = "An error occurred while processing your request.",
+                    ErrorDetails = ex.Message
                 });
             }
         }
+
+
+
 
 
     }
